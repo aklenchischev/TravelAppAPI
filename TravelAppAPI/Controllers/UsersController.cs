@@ -45,7 +45,7 @@ namespace TravelAppAPI.Controllers
         [ProducesResponseType(typeof(User), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            if (id <= 0)
+            if (id < 0)
             {
                 return BadRequest("Incorrect id format");
             }
@@ -79,7 +79,8 @@ namespace TravelAppAPI.Controllers
                 return NotFound();
             }
 
-            userToUpdate = user;
+            userToUpdate.Username = user.Username;
+            userToUpdate.Password = user.Password;
 
             _context.Users.Update(userToUpdate);
 

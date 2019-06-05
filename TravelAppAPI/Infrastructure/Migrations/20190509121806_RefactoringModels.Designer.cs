@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TravelAppAPI.Infrastructure;
 
 namespace TravelAppAPI.Infrastructure.Migrations
 {
     [DbContext(typeof(TravelAppContext))]
-    partial class TravelAppContextModelSnapshot : ModelSnapshot
+    [Migration("20190509121806_RefactoringModels")]
+    partial class RefactoringModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,13 +23,19 @@ namespace TravelAppAPI.Infrastructure.Migrations
 
             modelBuilder.Entity("TravelAppAPI.Models.Favourite", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("RouteId");
+                    b.Property<int?>("RouteId");
 
-                    b.HasKey("UserId", "RouteId");
+                    b.Property<int?>("UserId");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("RouteId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Favourites");
                 });
@@ -68,17 +76,23 @@ namespace TravelAppAPI.Infrastructure.Migrations
                     b.ToTable("Routes");
                 });
 
-            modelBuilder.Entity("TravelAppAPI.Models.RoutePlace", b =>
+            modelBuilder.Entity("TravelAppAPI.Models.RouteToPlace", b =>
                 {
-                    b.Property<int>("RouteId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("PlaceId");
+                    b.Property<int?>("PlaceId");
 
-                    b.HasKey("RouteId", "PlaceId");
+                    b.Property<int?>("RouteId");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("PlaceId");
 
-                    b.ToTable("RoutePlaces");
+                    b.HasIndex("RouteId");
+
+                    b.ToTable("RoutesToPlaces");
                 });
 
             modelBuilder.Entity("TravelAppAPI.Models.User", b =>
@@ -98,15 +112,13 @@ namespace TravelAppAPI.Infrastructure.Migrations
 
             modelBuilder.Entity("TravelAppAPI.Models.Favourite", b =>
                 {
-                    b.HasOne("TravelAppAPI.Models.Route", "Route")
+                    b.HasOne("TravelAppAPI.Models.Route")
                         .WithMany("Favourites")
-                        .HasForeignKey("RouteId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RouteId");
 
-                    b.HasOne("TravelAppAPI.Models.User", "User")
+                    b.HasOne("TravelAppAPI.Models.User")
                         .WithMany("Favourites")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("TravelAppAPI.Models.Route", b =>
@@ -116,17 +128,15 @@ namespace TravelAppAPI.Infrastructure.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("TravelAppAPI.Models.RoutePlace", b =>
+            modelBuilder.Entity("TravelAppAPI.Models.RouteToPlace", b =>
                 {
-                    b.HasOne("TravelAppAPI.Models.Place", "Place")
-                        .WithMany("RoutePlaces")
-                        .HasForeignKey("PlaceId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("TravelAppAPI.Models.Place")
+                        .WithMany("routeToPlaces")
+                        .HasForeignKey("PlaceId");
 
-                    b.HasOne("TravelAppAPI.Models.Route", "Route")
-                        .WithMany("RoutePlaces")
-                        .HasForeignKey("RouteId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("TravelAppAPI.Models.Route")
+                        .WithMany("RouteToPlaces")
+                        .HasForeignKey("RouteId");
                 });
 #pragma warning restore 612, 618
         }

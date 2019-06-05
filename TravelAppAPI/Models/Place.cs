@@ -1,4 +1,6 @@
-﻿namespace TravelAppAPI.Models
+﻿using System.Collections.Generic;
+
+namespace TravelAppAPI.Models
 {
     public class Place
     {
@@ -11,5 +13,7 @@
         public double Longtitude { get; set; }
 
         public string Address { get; set; }
+
+        public ICollection<RoutePlace> RoutePlaces { get; set; }
     }
 }
